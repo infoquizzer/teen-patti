@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "38789570468",
+    "project_id": "pattilive-9b963",
+    "storage_bucket": "pattilive-9b963.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:38789570468:android:edf0a629c3a97e5f81eb31",
+        "android_client_info": {
+          "package_name": "com.gamegards.teen_pattilive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "38789570468-rurjbspkiibvp5f6eeqp84mkduunast6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gamegards.teen_pattilive",
+            "certificate_hash": "5849c8fac447dd15b8204911bc141ded33d9fa26"
+          }
+        },
+        {
+          "client_id": "38789570468-4pb1dovlnr9ugdbhhp8sdnvkgr7mac02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoIeh4xpArkHnEgZHxpFCRbVG9naARxms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "38789570468-4pb1dovlnr9ugdbhhp8sdnvkgr7mac02.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
