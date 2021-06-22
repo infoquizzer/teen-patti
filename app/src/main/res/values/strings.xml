@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">TeenPatti -Play to win</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+
+    <string name="deep_link_url">www.deeplinkurl.com</string>
+
+    <string name="facebook_app_id">474484640365580</string>
+    <string name="fb_login_protocol_scheme">fb474484640365580</string>
+
+    <string name="razor_pay_test">rzp_test_SJyQBaZtlZOjC9</string>
+
+
+    <string name="tow_palyer">2\nPlayers</string>
+    <string name="five_player">5\nPlayers</string>
+    <string name="select_no_of_players">Select No. of Players</string>
+    <string name="play_now">Play Now</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="enter_birthday">Enter Birthday</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+
+</resources>
