@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.teen.patti.LoginScreen">
+    tools:context="com.gamegards.teen_pattilive.LoginScreen">
 
 
     <ImageView

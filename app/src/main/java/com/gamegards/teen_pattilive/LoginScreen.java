@@ -1,5 +1,6 @@
 package com.gamegards.teen_pattilive;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -18,13 +19,26 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.arch.core.executor.TaskExecutor;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskExecutors;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.FirebaseTooManyRequestsException;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -36,6 +50,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 public class LoginScreen extends AppCompatActivity {
@@ -56,6 +71,9 @@ public class LoginScreen extends AppCompatActivity {
     RadioButton genderradioButton;
     ImageView imgBackground, imgBackgroundlogin;
     Context context = LoginScreen.this;
+    private String mVerificationId;
+    private PhoneAuthProvider.ForceResendingToken mResendToken;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +114,8 @@ public class LoginScreen extends AppCompatActivity {
 
         radioGroup = findViewById(R.id.radioGroup);
         mAuth = FirebaseAuth.getInstance();
+
+        
         edtPhone = findViewById(R.id.edtPhone);
         edtname = findViewById(R.id.edtname);
         edtReferalCode = findViewById(R.id.edtReferalCode);
@@ -111,6 +131,7 @@ public class LoginScreen extends AppCompatActivity {
                     if (isSelected) {
 
                         login(rb.getText() + "");
+
 
                     } else {
 
@@ -141,6 +162,34 @@ public class LoginScreen extends AppCompatActivity {
 
         txtBirthDay.setOnClickListener(v -> new DatePickerDialog(this, onDateSetListener, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show());
 
+    }
+
+
+
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+
+                            Intent i = new Intent(LoginScreen.this, Homepage.class);
+                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                             startActivity(i);
+                            Toast.makeText(LoginScreen.this, "Login Successful", Toast.LENGTH_LONG).show();
+                            FirebaseUser user = task.getResult().getUser();
+                            // Update UI
+                        } else {
+                            // Sign in failed, display a message and update the UI
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                // The verification code entered was invalid
+                            }
+                        }
+                    }
+                });
     }
 
     private void login(final String value) {
@@ -209,6 +258,7 @@ public class LoginScreen extends AppCompatActivity {
             if (code.equalsIgnoreCase("200")) {
 
                 String otp_id = jsonObject.getString("otp_id");
+                sendVerificationCodetoUser(edtPhone.getText().toString().trim());
                 phoneLogin(otp_id, value);
 
             } else {
@@ -224,6 +274,7 @@ public class LoginScreen extends AppCompatActivity {
         }
 
     }
+
 
 
     public void phoneLogin(final String otp_id, final String value) {
@@ -244,8 +295,13 @@ public class LoginScreen extends AppCompatActivity {
 
         imglogin.setOnClickListener(v -> {
             if (edit_OTP.getText().toString().length() > 0) {
+
+
                 String verify_code = edit_OTP.getText().toString();
+
+
                 VerifyCode(verify_code, otp_id, value);
+
             } else {
                 Toast.makeText(getApplicationContext(), "Please Enter OTP",
                         Toast.LENGTH_SHORT).show();
@@ -256,6 +312,64 @@ public class LoginScreen extends AppCompatActivity {
 
         dialog.show();
 
+    }
+
+    private void sendVerificationCodetoUser(String phoneNo) {
+
+        PhoneAuthProvider.getInstance(mAuth).verifyPhoneNumber(
+                "+91"+phoneNo,
+                60,
+                TimeUnit.SECONDS,
+                this,
+                mCallbacks
+        );
+    }
+
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+
+        @Override
+        public void onVerificationCompleted(PhoneAuthCredential credential) {
+
+            String code= credential.getSmsCode();
+
+            if (code!=null){
+                fbVerifyCode(code);
+            }
+        }
+
+        @Override
+        public void onVerificationFailed(FirebaseException e) {
+            // This callback is invoked in an invalid request for verification is made,
+            // for instance if the the phone number format is not valid.
+            Log.w(TAG, "onVerificationFailed", e);
+            Toast.makeText(LoginScreen.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+            if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                // Invalid request
+            } else if (e instanceof FirebaseTooManyRequestsException) {
+                // The SMS quota for the project has been exceeded
+            }
+
+            // Show a message and update the UI
+        }
+
+        @Override
+        public void onCodeSent(@NonNull String verificationId,
+                @NonNull PhoneAuthProvider.ForceResendingToken token) {
+            // The SMS verification code has been sent to the provided phone number, we
+            // now need to ask the user to enter the code and then construct a credential
+            // by combining the code with a verification ID.
+            Log.d(TAG, "onCodeSent:" + verificationId);
+
+            // Save verification ID and resending token so we can use them later
+            mVerificationId = verificationId;
+            mResendToken = token;
+        }
+    };
+
+    private void fbVerifyCode(String code) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
+        signInWithPhoneAuthCredential(credential);
     }
 
     private int calculateAge(Date date) {
@@ -302,10 +416,14 @@ public class LoginScreen extends AppCompatActivity {
                                 editor.putString("token", token);
                                 editor.apply();
 
+                                fbVerifyCode(code);
+/*
                                 Intent i = new Intent(LoginScreen.this, Homepage.class);
                                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(i);
                                 Toast.makeText(LoginScreen.this, "Login Successful", Toast.LENGTH_LONG).show();
+                                */
+
                             } else {
 
                                 if (jsonObject.has("message")) {
@@ -328,10 +446,15 @@ public class LoginScreen extends AppCompatActivity {
 
                             editor.apply();
 
+                            fbVerifyCode(code);
+                            /*
                             Intent i = new Intent(LoginScreen.this, Homepage.class);
                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
                             Toast.makeText(LoginScreen.this, "Login Successful", Toast.LENGTH_LONG).show();
+
+
+                             */
 //
                         } else {
 
@@ -354,7 +477,7 @@ public class LoginScreen extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("otp", edit_OTP.getText().toString());
+                params.put("otp", "9999");
 //                params.put("name", edtname.getText().toString());
                 params.put("otp_id", otp_id.trim());
                 params.put("mobile", edtPhone.getText().toString());
