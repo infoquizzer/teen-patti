@@ -96,7 +96,7 @@
                     android:gravity="center"
                     android:text="6"
                     android:textColor="#FFB600"
-                    android:textSize="50dp"
+                    android:textSize="50sp"
                     android:textStyle="bold"
                     android:visibility="visible" />
             </RelativeLayout>

@@ -47,33 +47,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:text="SHARE YOUR INVITE CODE"
+                        android:text="SHARE TO YOUR FRIENDS"
                         android:textColor="@color/colordullwhite"
                         android:textSize="25dp"
 
                         />
-
-
-                    <RelativeLayout
-                        android:id="@+id/rltrefer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_below="@+id/txtshare"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/coupon">
-
-                        <TextView
-                            android:id="@+id/txtReferalcode"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerInParent="true"
-                            android:text="23423432"
-                            android:textColor="#ffffff"
-                            android:textSize="15dp" />
-
-                    </RelativeLayout>
 
 
                     <TextView
@@ -81,7 +59,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/rltrefer"
+                        android:layout_below="@+id/txtshare"
                         android:layout_marginTop="10dp"
                         android:text="AND GET"
                         android:textColor="@color/colordullwhite"

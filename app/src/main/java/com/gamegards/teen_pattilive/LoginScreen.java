@@ -330,11 +330,15 @@ public class LoginScreen extends AppCompatActivity {
         @Override
         public void onVerificationCompleted(PhoneAuthCredential credential) {
 
+
             String code= credential.getSmsCode();
 
             if (code!=null){
+               // edit_OTP.setText(code);
                 fbVerifyCode(code);
             }
+
+
         }
 
         @Override

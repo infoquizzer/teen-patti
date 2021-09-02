@@ -1980,14 +1980,13 @@ public class Homepage extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         ImageView imgclose = (ImageView) dialog.findViewById(R.id.imgclosetop);
         TextView txtshare = (TextView) dialog.findViewById(R.id.txtshare);
-        TextView txtReferalcode = (TextView) dialog.findViewById(R.id.txtReferalcode);
+
         TextView tv_referral_amount = (TextView) dialog.findViewById(R.id.tv_referral_amount);
         TextView txtchipsbelow = (TextView) dialog.findViewById(R.id.txtchipsbelow);
 
         tv_referral_amount.setText(""+prefs.getString(REFERRAL_AMOUNT,"")+" CHIPS");
         txtchipsbelow.setText(""+prefs.getString(JOINING_AMOUNT,"")+" CHIPS");
 
-        txtReferalcode.setText(referral_code);
         TextView txtAnd = (TextView) dialog.findViewById(R.id.txtAnd);
         ImageView imgfb = (ImageView) dialog.findViewById(R.id.imgfb);
         ImageView imgwhats = (ImageView) dialog.findViewById(R.id.imgwhats);
@@ -2264,7 +2263,7 @@ public class Homepage extends AppCompatActivity {
 
 
 
-        dialog.show();
+        //dialog.show();
     }
 
 
